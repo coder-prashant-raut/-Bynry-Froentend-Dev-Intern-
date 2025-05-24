@@ -1,68 +1,35 @@
-import React, { useRef, useEffect } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import React, { useEffect } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
-mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
+// Fix default marker icon not showing
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
 const MapComponent = ({ lat, lng, name }) => {
-  const mapContainer = useRef(null);
-  const mapRef = useRef(null);
-  const markerRef = useRef(null);
-  const popupRef = useRef(null);
-
   useEffect(() => {
-    if (!mapContainer.current) return;
+    const map = L.map('map').setView([lat, lng], 13);
 
-    // Initialize map only once
-    if (!mapRef.current) {
-      mapRef.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [lng, lat],
-        zoom: 12,
-      });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-      popupRef.current = new mapboxgl.Popup({
-        closeOnClick: true,
-        closeButton: true,
-      });
+    L.marker([lat, lng])
+      .addTo(map)
+      .bindPopup(`<b>${name}</b>`)
+      .openPopup();
 
-      markerRef.current = new mapboxgl.Marker()
-        .setLngLat([lng, lat])
-        .setPopup(popupRef.current)
-        .addTo(mapRef.current);
-
-      // Open popup by default
-      popupRef.current.setHTML(`<h4>${name}</h4>`).addTo(mapRef.current);
-
-      // Resize map after short delay to fix container size issues
-      setTimeout(() => {
-        mapRef.current.resize();
-      }, 100);
-    }
-
-    // Cleanup map on unmount
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
-    };
-  }, []);
-
-  // Update marker and popup on lat/lng/name changes
-  useEffect(() => {
-    if (!mapRef.current || !markerRef.current || !popupRef.current) return;
-    mapRef.current.flyTo({ center: [lng, lat], zoom: 12 });
-    markerRef.current.setLngLat([lng, lat]);
-    popupRef.current.setHTML(`<h4>${name}</h4>`);
+    return () => map.remove(); // Clean up on unmount
   }, [lat, lng, name]);
 
   return (
     <div
-      ref={mapContainer}
-      className="w-full rounded-lg shadow-md border text-black"
-      style={{ height: '384px' }} // 24rem, same as Tailwind h-96
+      id="map"
+      className="w-full h-96 min-h-96 rounded-lg shadow-md border"
     />
   );
 };

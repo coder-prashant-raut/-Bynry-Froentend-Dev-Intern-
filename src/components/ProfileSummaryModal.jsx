@@ -78,6 +78,7 @@ const ProfileSummaryModal = ({ profile, isOpen, onClose }) => {
 
     <div className="mt-6 w-full h-64 rounded-md overflow-hidden shadow border border-gray-200">
       <MapComponent lat={profile.lat} lng={profile.lng} name={profile.name} />
+
     </div>
   </div>
 </Modal>

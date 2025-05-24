@@ -30,7 +30,7 @@ const Home = () => {
       </h1>
 
       {/* Search Input */}
-      <div className="max-w-md mx-auto mb-6">
+      <div className="max-w-md mx-auto mb-6 text-black">
         <input
           type="text"
           placeholder="Search by name, location or keyword..."

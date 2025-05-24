@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { loadProfiles, saveProfiles } from '../utils/localStorageUtils';
+import React, { useState, useEffect } from "react";
+import { loadProfiles, saveProfiles } from "../utils/localStorageUtils";
 
 const AdminPanel = () => {
   const [profiles, setProfiles] = useState([]);
   const [formData, setFormData] = useState({
     id: null,
-    name: '',
-    photo: '',
-    description: '',
-    address: '',
-    lat: '',
-    lng: '',
+    name: "",
+    photo: "",
+    description: "",
+    address: "",
+    lat: "",
+    lng: "",
+    email: "",
+    phone: "",
+    interests: "", // Will keep this as comma-separated string for input
   });
 
   useEffect(() => {
@@ -25,13 +28,24 @@ const AdminPanel = () => {
   };
 
   const handleAddOrUpdate = () => {
+    // Convert interests string to array (trim spaces, filter empty)
+    const interestsArray = formData.interests
+      .split(",")
+      .map((i) => i.trim())
+      .filter((i) => i);
+
+    const newProfile = {
+      ...formData,
+      interests: interestsArray,
+    };
+
     let updatedProfiles;
     if (formData.id) {
       updatedProfiles = profiles.map((p) =>
-        p.id === formData.id ? formData : p
+        p.id === formData.id ? newProfile : p
       );
     } else {
-      updatedProfiles = [...profiles, { ...formData, id: Date.now() }];
+      updatedProfiles = [...profiles, { ...newProfile, id: Date.now() }];
     }
 
     setProfiles(updatedProfiles);
@@ -39,17 +53,24 @@ const AdminPanel = () => {
 
     setFormData({
       id: null,
-      name: '',
-      photo: '',
-      description: '',
-      address: '',
-      lat: '',
-      lng: '',
+      name: "",
+      photo: "",
+      description: "",
+      address: "",
+      lat: "",
+      lng: "",
+      email: "",
+      phone: "",
+      interests: "",
     });
   };
 
   const handleEdit = (profile) => {
-    setFormData(profile);
+    // When editing, convert interests array to comma-separated string
+    setFormData({
+      ...profile,
+      interests: profile.interests ? profile.interests.join(", ") : "",
+    });
   };
 
   const handleDelete = (id) => {
@@ -59,7 +80,7 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 text-black">
       <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-900">
         Admin Panel
       </h1>
@@ -67,7 +88,7 @@ const AdminPanel = () => {
       {/* Form */}
       <section className="bg-white p-8 rounded-lg shadow-lg mb-12">
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-          {formData.id ? 'Edit Profile' : 'Add New Profile'}
+          {formData.id ? "Edit Profile" : "Add New Profile"}
         </h2>
 
         <form
@@ -79,10 +100,7 @@ const AdminPanel = () => {
         >
           {/* Name */}
           <div className="flex flex-col">
-            <label
-              htmlFor="name"
-              className="mb-1 font-medium text-gray-700"
-            >
+            <label htmlFor="name" className="mb-1 font-medium text-black">
               Name
             </label>
             <input
@@ -98,10 +116,7 @@ const AdminPanel = () => {
 
           {/* Photo URL */}
           <div className="flex flex-col">
-            <label
-              htmlFor="photo"
-              className="mb-1 font-medium text-gray-700"
-            >
+            <label htmlFor="photo" className="mb-1 font-medium text-black">
               Photo URL
             </label>
             <input
@@ -119,7 +134,7 @@ const AdminPanel = () => {
           <div className="flex flex-col sm:col-span-2">
             <label
               htmlFor="description"
-              className="mb-1 font-medium text-gray-700"
+              className="mb-1 font-medium text-black"
             >
               Description
             </label>
@@ -136,10 +151,7 @@ const AdminPanel = () => {
 
           {/* Address */}
           <div className="flex flex-col">
-            <label
-              htmlFor="address"
-              className="mb-1 font-medium text-gray-700"
-            >
+            <label htmlFor="address" className="mb-1 font-medium text-black">
               Address
             </label>
             <input
@@ -154,10 +166,7 @@ const AdminPanel = () => {
 
           {/* Latitude */}
           <div className="flex flex-col">
-            <label
-              htmlFor="lat"
-              className="mb-1 font-medium text-gray-700"
-            >
+            <label htmlFor="lat" className="mb-1 font-medium text-black">
               Latitude
             </label>
             <input
@@ -173,10 +182,7 @@ const AdminPanel = () => {
 
           {/* Longitude */}
           <div className="flex flex-col">
-            <label
-              htmlFor="lng"
-              className="mb-1 font-medium text-gray-700"
-            >
+            <label htmlFor="lng" className="mb-1 font-medium text-black">
               Longitude
             </label>
             <input
@@ -190,13 +196,61 @@ const AdminPanel = () => {
             />
           </div>
 
+          {/* Email */}
+          <div className="flex flex-col">
+            <label htmlFor="email" className="mb-1 font-medium text-black">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              type="email"
+              className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="example@mail.com"
+            />
+          </div>
+
+          {/* Phone */}
+          <div className="flex flex-col">
+            <label htmlFor="phone" className="mb-1 font-medium text-black">
+              Phone
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              type="tel"
+              className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="+1 234 567 8901"
+            />
+          </div>
+
+          {/* Interests */}
+          <div className="flex flex-col sm:col-span-2">
+            <label htmlFor="interests" className="mb-1 font-medium text-black">
+              Interests (comma separated)
+            </label>
+            <input
+              id="interests"
+              name="interests"
+              value={formData.interests}
+              onChange={handleChange}
+              type="text"
+              className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g., Electronics, Gadgets"
+            />
+          </div>
+
           {/* Submit button spanning full width */}
           <div className="sm:col-span-2 flex justify-end">
             <button
               type="submit"
               className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
             >
-              {formData.id ? 'Update Profile' : 'Add Profile'}
+              {formData.id ? "Update Profile" : "Add Profile"}
             </button>
           </div>
         </form>
@@ -227,31 +281,38 @@ const AdminPanel = () => {
                       className="w-16 h-16 rounded-full object-cover border border-gray-300"
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-semibold">
+                    <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center text-gray-600">
                       N/A
                     </div>
                   )}
+
                   <div>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {profile.name}
+                    <h3 className="font-bold text-lg">{profile.name}</h3>
+                    <p className="text-sm text-gray-700">
+                      {profile.description || "No description"}
                     </p>
-                    <p className="text-gray-600">{profile.description}</p>
-                    <p className="text-sm text-gray-500 mt-1">{profile.address}</p>
+                    <p className="text-xs text-gray-500">
+                      {profile.email} | {profile.phone}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Interests:{" "}
+                      {profile.interests && profile.interests.length > 0
+                        ? profile.interests.join(", ")
+                        : "None"}
+                    </p>
                   </div>
                 </div>
 
-                <div className="mt-4 sm:mt-0 flex space-x-4">
+                <div className="flex space-x-3 mt-3 sm:mt-0">
                   <button
                     onClick={() => handleEdit(profile)}
-                    className="text-yellow-600 hover:underline font-medium"
-                    aria-label={`Edit ${profile.name}`}
+                    className="text-blue-600 hover:text-blue-800 font-semibold"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(profile.id)}
-                    className="text-red-600 hover:underline font-medium"
-                    aria-label={`Delete ${profile.name}`}
+                    className="text-red-600 hover:text-red-800 font-semibold"
                   >
                     Delete
                   </button>
