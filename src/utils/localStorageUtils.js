@@ -9,6 +9,9 @@ const mockProfiles = [
     address: '123 Main St, New York, NY',
     lat: '40.7128',
     lng: '-74.0060',
+    email: 'john.doe@example.com',
+    phone: '+1 212-555-0101',
+    interests: ['Electronics', 'Gadgets']
   },
   {
     id: 2,
@@ -18,6 +21,9 @@ const mockProfiles = [
     address: '456 Park Ave, New York, NY',
     lat: '40.7648',
     lng: '-73.9730',
+    email: 'jane.smith@example.com',
+    phone: '+1 212-555-0102',
+    interests: ['Fashion', 'Beauty']
   },
   {
     id: 3,
@@ -27,6 +33,9 @@ const mockProfiles = [
     address: '789 Sunset Blvd, Los Angeles, CA',
     lat: '34.0522',
     lng: '-118.2437',
+    email: 'michael.johnson@example.com',
+    phone: '+1 310-555-0103',
+    interests: ['Sports', 'Health']
   },
   {
     id: 4,
@@ -36,6 +45,9 @@ const mockProfiles = [
     address: '321 Broadway, San Francisco, CA',
     lat: '37.7749',
     lng: '-122.4194',
+    email: 'emily.davis@example.com',
+    phone: '+1 415-555-0104',
+    interests: ['Electronics', 'Startups']
   },
   {
     id: 5,
@@ -45,6 +57,9 @@ const mockProfiles = [
     address: '654 Elm St, Dallas, TX',
     lat: '32.7767',
     lng: '-96.7970',
+    email: 'david.wilson@example.com',
+    phone: '+1 214-555-0105',
+    interests: ['Luxury Items', 'Cars']
   },
   {
     id: 6,
@@ -54,6 +69,9 @@ const mockProfiles = [
     address: '987 Market St, Miami, FL',
     lat: '25.7617',
     lng: '-80.1918',
+    email: 'olivia.martinez@example.com',
+    phone: '+1 305-555-0106',
+    interests: ['Fashion', 'Jewelry']
   },
   {
     id: 7,
@@ -63,6 +81,9 @@ const mockProfiles = [
     address: '159 Lake Shore Dr, Chicago, IL',
     lat: '41.8781',
     lng: '-87.6298',
+    email: 'james.brown@example.com',
+    phone: '+1 312-555-0107',
+    interests: ['Finance', 'Technology']
   },
   {
     id: 8,
@@ -72,6 +93,9 @@ const mockProfiles = [
     address: '753 Beacon St, Boston, MA',
     lat: '42.3601',
     lng: '-71.0589',
+    email: 'sophia.garcia@example.com',
+    phone: '+1 617-555-0108',
+    interests: ['Books', 'Education']
   },
   {
     id: 9,
@@ -81,6 +105,9 @@ const mockProfiles = [
     address: '852 King St, Seattle, WA',
     lat: '47.6062',
     lng: '-122.3321',
+    email: 'william.lee@example.com',
+    phone: '+1 206-555-0109',
+    interests: ['Technology', 'Gaming']
   },
   {
     id: 10,
@@ -90,6 +117,9 @@ const mockProfiles = [
     address: '147 Queen St, Toronto, ON',
     lat: '43.6532',
     lng: '-79.3832',
+    email: 'ava.thompson@example.com',
+    phone: '+1 416-555-0110',
+    interests: ['Home Decor', 'Interior Design']
   },
 ];
 
@@ -102,7 +132,7 @@ export const loadProfiles = () => {
   if (data) {
     return JSON.parse(data);
   } else {
-    // Agar localStorage mein data nahi hai, toh mock data save karke return karo
+    // If no data in localStorage, save and return mock data
     saveProfiles(mockProfiles);
     return mockProfiles;
   }
